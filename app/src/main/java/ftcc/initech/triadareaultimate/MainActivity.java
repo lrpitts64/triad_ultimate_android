@@ -8,17 +8,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
-import ftcc.initech.triadareaultimate.model.menuItem;
+import ftcc.initech.triadareaultimate.controller.HashMapMenuAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    private String[] mMenuTitles;
-    private HashMap<String, Integer> mMenuMap;
-    private menuItem[] mMenuItems;
+    private LinkedHashMap<String, Integer> mMenuMap;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -27,22 +25,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO: 3/16/17 add material icons
         // TODO: 3/16/17 change from using string array to menuItem model
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMenuTitles = getResources().getStringArray(R.array.menu_array);
+        mMenuMap = new LinkedHashMap<>();
+        mMenuMap.put("Home", R.drawable.ic_home_black_24dp);
+        mMenuMap.put("News", R.drawable.ic_rss_feed_24px);
+        mMenuMap.put("Calendar", R.drawable.ic_event_black_24dp);
+        mMenuMap.put("Settings", R.drawable.ic_settings_applications_black_24dp);
+
         mDrawerList = (ListView) findViewById(R.id.menu_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(MainActivity.this, R.layout.menu_list_item,
-                mMenuTitles));
+        mDrawerList.setAdapter(new HashMapMenuAdapter(mMenuMap));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout,
                 R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
-                super.onDrawerClosed(View view);
+                super.onDrawerClosed(view);
                 getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu();
             }
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         // TODO: 3/16/17 setDrawerListener is deprecated, find its replacement 
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
     }
 
     /**
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         mDrawerList.setItemChecked(position, true);
-        setTitle(mMenuTitles[position]);
+        setTitle(new ArrayList<String>(mMenuMap.keySet()).get(position));
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 

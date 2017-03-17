@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Triad Area Ultimate</string>
+    <string name="drawer_open">Menu</string>
+    <string name="drawer_close">Menu_Closed</string>
 </resources>
